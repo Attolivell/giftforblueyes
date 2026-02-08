@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Un Regalo per Te</title>
+    <title>Sorpresa di Compleanno!</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         :root {
             --amazon-orange: #ff9900;
             --dark-blue: #232f3e;
             --soft-green: #e8f5e9;
-            --heart-color: rgba(102, 187, 106, 0.2); /* Verde acqua sbiadito */
         }
 
         body {
@@ -20,15 +19,41 @@
             height: 100vh;
             margin: 0;
             background-color: var(--soft-green);
-            /* Sfondo con cuori stilizzati usando SVG */
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='50' height='50' viewBox='0 0 24 24' fill='none' stroke='rgba(102, 187, 106, 0.15)' stroke-width='1' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.72-8.72 1.06-1.06a5.5 5.5 0 0 0 0-7.78z'%3E%3C/path%3E%3C/svg%3E");
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Segoe UI', Arial, sans-serif;
             overflow: hidden;
+            position: relative;
         }
 
+        /* SFONDO CON CUORI ANIMATI */
+        .bg-hearts {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        .heart-icon {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            fill: none;
+            stroke: rgba(102, 187, 106, 0.3);
+            stroke-width: 1.5;
+            opacity: 0;
+            animation: blink 4s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 0; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+
+        /* CARD E ANIMAZIONI */
         .card-container {
-            width: 350px;
-            height: 550px;
+            width: 340px;
+            height: 520px;
             perspective: 1000px;
             animation: bounceInUp 1s ease-out;
         }
@@ -44,7 +69,7 @@
             height: 100%;
             position: relative;
             transform-style: preserve-3d;
-            transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
         }
 
@@ -55,30 +80,28 @@
             width: 100%;
             height: 100%;
             backface-visibility: hidden;
-            border-radius: 25px;
-            padding: 30px;
+            border-radius: 20px;
+            padding: 25px;
             box-sizing: border-box;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
-        /* FRONTE */
         .card-front { background: white; justify-content: center; }
         
-        .amazon-img { width: 80%; margin-bottom: 40px; }
+        .amazon-img { width: 70%; margin-bottom: 30px; }
 
         .btn-action {
             background: var(--amazon-orange);
             color: white;
-            padding: 15px 30px;
+            padding: 12px 24px;
             border-radius: 50px;
             font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
             border: none;
-            box-shadow: 0 4px 15px rgba(255, 153, 0, 0.4);
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(255, 153, 0, 0.3);
         }
 
         /* RETRO */
@@ -86,94 +109,100 @@
             background: var(--dark-blue);
             color: white;
             transform: rotateY(180deg);
-            text-align: left; /* Migliore leggibilità */
         }
+
+        h2 { color: var(--amazon-orange); margin: 0 0 20px 0; font-size: 1.6em; }
 
         .gift-section {
-            background: rgba(255,255,255,0.05);
-            border-radius: 15px;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-left: 4px solid var(--amazon-orange);
+            background: rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 15px;
+            border-left: 3px solid var(--amazon-orange);
+            font-size: 0.95em;
+            line-height: 1.4;
+            width: 100%;
         }
 
-        .gift-title {
+        .gift-label {
             color: var(--amazon-orange);
             font-weight: bold;
-            margin-bottom: 5px;
             display: block;
+            margin-bottom: 4px;
+            font-size: 0.8em;
+            text-transform: uppercase;
         }
 
-        #copyBtn {
-            margin-top: auto;
-            background: #444;
-            font-size: 0.9em;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
+        #copyBtn { margin-top: auto; width: 100%; }
         #copyBtn.copied { background: #28a745; }
 
-        h2 { text-align: center; width: 100%; margin-bottom: 25px; }
     </style>
 </head>
 <body>
 
+<div class="bg-hearts" id="hearts-container"></div>
+
 <div class="card-container">
     <div id="card" class="card">
         <div class="card-face card-front">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon" class="amazon-img">
             <button class="btn-action">Apri il regalo 🎁</button>
         </div>
 
         <div class="card-face card-back">
-            <h2>Per te... ✨</h2>
+            <h2>Sorpresa! 🎂</h2>
             
             <div class="gift-section">
-                <span class="gift-title">PARTE 1: L'utile</span>
-                Un classico intramontabile: il buono Amazon per quel qualcosa che tenevi nel carrello!
+                <span class="gift-label">Parte 1: L'utile</span>
+                Un classico intramontabile: il buono Amazon per quel qualcosa che avevi puntato!
             </div>
 
             <div class="gift-section">
-                <span class="gift-title">PARTE 2: L'originale</span>
-                Un'esperienza tutta nostra: <b>Sushi insieme</b>, dove vuoi e quando vuoi! 🍣
+                <span class="gift-label">Parte 2: L'originale</span>
+                Un'esperienza insieme: <b>Sushi</b> quando e dove vorrai, offro io! 🍣
             </div>
 
             <button id="copyBtn" class="btn-action" onclick="copyCode(event)">Copia Codice Buono 📋</button>
-            <p id="copyStatus" style="font-size: 0.8em; margin-top: 10px; color: #aaa; text-align: center;"></p>
         </div>
     </div>
 </div>
 
 <script>
+    // Generatore di cuori randomici
+    const container = document.getElementById('hearts-container');
+    const heartSvg = `<svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.72-8.72 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`;
+
+    for (let i = 0; i < 20; i++) {
+        const div = document.createElement('div');
+        div.className = 'heart-icon';
+        div.innerHTML = heartSvg;
+        div.style.left = Math.random() * 100 + 'vw';
+        div.style.top = Math.random() * 100 + 'vh';
+        div.style.animationDelay = Math.random() * 5 + 's';
+        container.appendChild(div);
+    }
+
     const card = document.getElementById('card');
-    const BUONO_CODE = "IL-TUO-CODICE-QUI"; // <--- INSERISCI QUI IL CODICE VERO
+    const BUONO_CODE = "IL-TUO-CODICE-QUI"; 
 
     card.addEventListener('click', function(e) {
-        // Evita che il click sul bottone di copia faccia girare la carta di nuovo
         if (e.target.id === 'copyBtn') return;
-        
         const isFlipped = card.classList.toggle('is-flipped');
         if (isFlipped) {
-            confetti({
-                particleCount: 150,
-                spread: 70,
-                origin: { y: 0.6 },
-                colors: ['#ff9900', '#ffffff', '#66bb6a']
-            });
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
         }
     });
 
     function copyCode(event) {
-        event.stopPropagation(); // Impedisce alla carta di girarsi
+        event.stopPropagation();
         navigator.clipboard.writeText(BUONO_CODE).then(() => {
             const btn = document.getElementById('copyBtn');
-            btn.innerText = "Codice Copiato! ✅";
+            btn.innerText = "Copiato! ✅";
             btn.classList.add('copied');
             setTimeout(() => {
                 btn.innerText = "Copia Codice Buono 📋";
                 btn.classList.remove('copied');
-            }, 3000);
+            }, 2000);
         });
     }
 </script>
