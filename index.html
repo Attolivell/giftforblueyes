@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buon Compleanno!</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f2f5;
+            font-family: 'Segoe UI', sans-serif;
+            overflow: hidden;
+        }
+
+        @keyframes bounceInUp {
+            0% { transform: translateY(1000px); opacity: 0; }
+            60% { transform: translateY(-30px); opacity: 1; }
+            80% { transform: translateY(10px); }
+            100% { transform: translateY(0); }
+        }
+
+        .card-container {
+            width: 350px;
+            height: 500px;
+            perspective: 1000px;
+            animation: bounceInUp 1s ease-out;
+        }
+
+        .card {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+        .card.is-flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            box-sizing: border-box;
+        }
+
+        .card-front { background: white; }
+        
+        .amazon-img {
+            width: 90%;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .click-me {
+            background: #ff9900;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(255, 153, 0, 0.3);
+        }
+
+        .card-back {
+            background: #232f3e;
+            color: white;
+            transform: rotateY(180deg);
+            text-align: center;
+        }
+
+        .lettera {
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        h2 { color: #ff9900; margin-top: 0; }
+    </style>
+</head>
+<body>
+
+<div class="card-container">
+    <div id="birthdayCard" class="card">
+        <div class="card-face card-front">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon" class="amazon-img">
+            <div class="click-me">Clicca per scoprire! 🎁</div>
+        </div>
+        <div class="card-face card-back">
+            <h2>Sorpresa! 🎂</h2>
+            <p class="lettera">
+                Questo regalo è formato da 2 parti:<br><br>
+                1️⃣ Una parte scontata classica ma utile (il buono Amazon).<br><br>
+                2️⃣ Una parte originale, un qualcosa che non abbiamo mai fatto insieme: 
+                <strong>un pranzo/cena insieme al Sushi</strong> riscattabile quando vorrai! 🍣
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+    const card = document.getElementById('birthdayCard');
+    
+    card.addEventListener('click', function() {
+        const isFlipped = card.classList.toggle('is-flipped');
+        
+        // Se la carta si gira sul retro, spara i coriandoli
+        if (isFlipped) {
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#ff9900', '#ffffff', '#232f3e']
+            });
+        }
+    });
+</script>
+
+</body>
+</html>
